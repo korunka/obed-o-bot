@@ -13,6 +13,9 @@ v kanáu #obed nebo osobní konverzaci.
 4. `npm start` a pak si pozvete `@<jmeno-vaseho-bota>` do nějakého kanálu
 5. a pak už jen... `nevíte někdo co mají dnes v záležitosti?`
 
+## Demo
+
+![Ukázka, jak funguje Oběd-o-bot](https://files.slack.com/files-pri/T0Q92HGF6-F0QMGDN68/obedobot-demo.jpg?pub_secret=3a4a8458ba)
 
 ## Dependencies
  * [Botkit](https://github.com/howdyai/botkit) - skvělá knihovna pro Slack
