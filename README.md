@@ -15,11 +15,11 @@ v kanáu #obed nebo osobní konverzaci.
 
 
 ## Dependencies
- * Botkit(https://github.com/howdyai/botkit) - skvělá knihovna pro Slack
- * Cheerio(https://github.com/cheeriojs/cheerio) pro scrapeování webových
+ * [Botkit](https://github.com/howdyai/botkit) - skvělá knihovna pro Slack
+ * [Cheerio](https://github.com/cheeriojs/cheerio) pro scrapeování webových
    stránek pomocí CSS selektorů. Uplně stejně jako jQuery.
- * Dotenv(https://github.com/motdotla/dotenv) poskytuje `process.env` proměnné
+ * [Dotenv](https://github.com/motdotla/dotenv) poskytuje `process.env` proměnné
    načtené z lokálního `.env` souboru.
- * Encoding(https://github.com/andris9/encoding) protože některé restaurace
+ * [Encoding](https://github.com/andris9/encoding) protože některé restaurace
    mají potřebu posílat nabídku v kódování `cp1250` :-)
  
