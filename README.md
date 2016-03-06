@@ -10,8 +10,9 @@ v kanáu #obed nebo osobní konverzaci.
 1. Vytvořte novou [bot integration](https://my.slack.com/services/new/bot)
 2. `git clone & npm install` na serveru nebo lokálně
 3. do `.env` vložte `SLACK_API_TOKEN=rofl-01234567890-TokenCoVámVystavilSlack`
-4. `npm start` a pak si pozvete `@<jmeno-vaseho-bota>` do nějakého kanálu
-5. a pak už jen... `nevíte někdo co mají dnes v záležitosti?`
+4. `npm start`
+5. pozvěte `@<jmeno-vaseho-bota>` do nějakého kanálu nebo otevřete přímou konverzaci
+6. a pak už jen... `nevíte někdo co mají dnes v záležitosti?`
 
 ## Demo
 
@@ -25,4 +26,6 @@ v kanáu #obed nebo osobní konverzaci.
    načtené z lokálního `.env` souboru.
  * [Encoding](https://github.com/andris9/encoding) protože některé restaurace
    mají potřebu posílat nabídku v kódování `cp1250` :-)
- 
+
+
+Made with :yellow_heart: in Prague
