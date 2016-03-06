@@ -1,0 +1,34 @@
+{
+  "name": "obed-o-bot",
+  "version": "0.5.0",
+  "description": "Slack bot pripominajici obedy a zjistujici nabidku",
+  "author": "Ondra Hlaváč <ondrej.hlavac@korunka.eu> (http://ondra.hlavac.cz)",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/korunka/obed-o-bot.git"
+  },
+  "bugs": {
+    "url": "https://github.com/korunka/obed-o-bot/issues"
+  },
+  "main": "bot.js",
+  "scripts": {
+    "start": "node bot.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "slack",
+    "bot",
+    "korunka"
+  ],
+  "license": "ISC",
+  "dependencies": {
+    "@slack/client": "^2.0.6",
+    "botkit": "0.0.7",
+    "cheerio": "^0.20.0",
+    "dotenv": "^2.0.0",
+    "encoding": "^0.1.12",
+    "node-schedule": "^1.0.0",
+    "request": "^2.69.0"
+  },
+  "homepage": "https://github.com/korunka/obed-o-bot#readme"
+}
