@@ -7,6 +7,7 @@ v kanáu #obed nebo osobní konverzaci.
 
 Technologie: [Node.js](https://github.com/nodejs/node) + [Slack](https://slack.com)
 
+[![Dependency Status](https://david-dm.org/korunka/obed-o-bot.svg)](https://david-dm.org/korunka/obed-o-bot) [![Code Climate](https://codeclimate.com/github/korunka/obed-o-bot/badges/gpa.svg)](https://codeclimate.com/github/korunka/obed-o-bot) [![Codacy Badge](https://api.codacy.com/project/badge/grade/22ceb27921eb48c7a63187963d559b2c)](https://www.codacy.com/app/ondra/obed-o-bot) [![Korunka badge](https://img.shields.io/badge/powered%20by-Loterie%20Korunka-edbf1f.svg)](https://www.korunka.eu/)
 
 
 ## Getting Started
