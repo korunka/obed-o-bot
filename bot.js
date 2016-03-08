@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 require('dotenv').load();
 const Scraper = require('./scraper');
@@ -13,15 +13,27 @@ var scraper = new Scraper(); // stačí nám jeden
 
 
 var Botkit = require('botkit/lib/Botkit.js');
-var os = require('os');
 
 var controller = Botkit.slackbot({
   debug : true
 });
 
-var bot = controller.spawn({
+controller.spawn({
   token : process.env.SLACK_API_TOKEN
 }).startRTM();
+
+
+
+/**
+ * Generátor nádodných čísel od MIN do MAX (vyjma MAX)
+ *
+ * @param {Number} min
+ * @param {Number} max
+ * @returns {Number}
+ */
+function getRandomInt(min, max) {
+  return Math.floor(Math.random() * (max - min)) + min;
+}
 
 
 
@@ -38,7 +50,7 @@ controller.hears(
         channel   : message.channel,
         name      : 'robot_face'
       },
-      function (err, res) {
+      function (err) {
         if (err) {
           bot.botkit.log('Failed to add emoji reaction :( ', err);
         }
@@ -50,7 +62,7 @@ controller.hears(
 controller.hears(
   ['[cč]au', '[čc]us', 'ahoj', 'zdar'],
   ['direct_message', 'direct_mention', 'mention'],
-  function(bot, message){
+  function (bot, message) {
     let odpovedi = [
       'Čau', 'Čus', 'Ahoj', 'Zdar', 'Čau. Jak se vede?',
       'Jé čau. Ani jsem tě neviděl přicházet.',
@@ -75,7 +87,7 @@ controller.hears(
     var idZdroje;
 
     // pošleme aktivitu
-    bot.reply(message, { type : "typing" });
+    bot.reply(message, { type : 'typing' });
 
     if (hit.search(/z[aá]le/i) > -1) {
       idZdroje = 'zalezitost';
@@ -92,23 +104,21 @@ controller.hears(
         var polozky = [];
         for (var i = 0; i < result.polozky.length; i++) {
           polozky.push(
-            result.polozky[i].name + " - *" + result.polozky[i].price + "*"
+            result.polozky[i].nazev + ' - *' + result.polozky[i].cena + '*'
           );
         }
         bot.reply(message, {
-          text        : "Aktuální nabídka pro " + result.nazev,
+          text        : 'Aktuální nabídka pro ' + result.nazev,
           attachments : [{
-            fallback   : "Denní menu pro " + result.nazev + ": " + result.web,
+            fallback   : 'Denní menu pro ' + result.nazev + ': ' + result.web,
             title      : result.nazev,
             title_link : result.web,
             text       : polozky.join('\n'),
-            mrkdwn_in  : ["text"]
+            mrkdwn_in  : ['text']
           }]
         });
       }
-    }).catch(function (error) {
-      bot.reply(message, 'Promiň, něco se pokazilo a nemůžu najít nabídku.');
-    });
+    }).catch(() => bot.reply(message, 'Promiň, něco se pokazilo a nemůžu najít nabídku.'));
   }
 );
 
@@ -117,7 +127,7 @@ controller.hears(
   ['direct_message', 'direct_mention', 'mention', 'ambient'],
   function (bot, message) {
     // pošleme aktivitu
-    bot.reply(message, { type : "typing" });
+    bot.reply(message, { type : 'typing' });
     scraper.vratVsechnyNabidky().then(function (results) {
       if (Object.keys(results).length === 0) {
         bot.reply(message, 'Bohužel pro dnešek nemám žádné nabídky.');
@@ -128,27 +138,24 @@ controller.hears(
             var polozky = [];
             for (var i = 0; i < results[key].polozky.length; i++) {
               polozky.push(
-                results[key].polozky[i].name + " - *" + results[key].polozky[i].price + "*"
+                results[key].polozky[i].nazev + ' - *' + results[key].polozky[i].cena + '*'
               );
             }
             nabidky.push({
-              fallback   : "Denní menu pro " + results[key].nazev + ": " + results[key].web,
+              fallback   : 'Denní menu pro ' + results[key].nazev + ': ' + results[key].web,
               title      : results[key].nazev,
               title_link : results[key].web,
               text       : polozky.join('\n'),
-              mrkdwn_in  : ["text"]
+              mrkdwn_in  : ['text']
             });
           }
         }
         bot.reply(message, {
-          text        : "Takhle vypadá aktuální nabídka",
+          text        : 'Takhle vypadá aktuální nabídka',
           attachments : nabidky
         });
       }
-    }).catch((error) => console.log("Error:", error));
+    }).catch((error) => console.log('Error:', error));
   }
 );
 
-function getRandomInt(min, max) {
-  return Math.floor(Math.random() * (max - min)) + min;
-}
