@@ -58,4 +58,4 @@ Nová funkcionalita a změny, které by se do budoucna hodily:
 Powered by [Loterie Korunka](https://www.korunka.eu) &copy;2016.
 Code licensed under an [ISC License](https://github.com/korunka/obed-o-bot/blob/master/LICENSE).
 
-Made with :yellow_heart: in Prague
+Made with :yellow_heart: in [Prague](https://mapy.cz/s/jfYj)
