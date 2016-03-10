@@ -160,3 +160,99 @@ controller.hears(
   }
 );
 
+
+
+// ========================================================================== //
+// ===== KAM PŮJDEME? - HLASOVÁNÍ
+// ========================================================================== //
+
+
+controller.hears(
+  [
+    '(kam)',                // KAM půjdeme
+    '(kter)(?!.*j[ií]dl)'   // KTERou vybereme, ale už ne "které jídlo si dáte"
+  ],
+  ['direct_message', 'direct_mention', 'mention', 'ambient'],
+  function (bot, message) {
+    // pošleme aktivitu
+    bot.reply(message, { type : 'typing' });
+    // pro všechny restauračky, kde máme nabídku jídel připravíme hlasování
+    scraper.vratVsechnyNabidky()
+      .then(function (results) {
+        if (Object.keys(results).length === 0) {
+          bot.reply(message, 'Dneska vám asi nic nedoporučím. Nemám z čeho.');
+        } else {
+          var restaurace = { fallback : [], text : [] };
+          var i = 0;
+          var emojis = [':one:', ':two:', ':three:', ':four:', ':five:']; // zatím víc než 5 neumíme
+
+          for (var key in results) {
+            if (results.hasOwnProperty(key)) {
+
+              // TODO: neumíme víc než pět emoticon, zatím...
+              if (i >= 5) {
+                bot.say(
+                  message,
+                  'Hmm... mám nějak víc možností než co zvládám. ' +
+                  'Kouknul byste se mi pak někdo pod kapotu?'
+                );
+                break;
+              }
+
+              // připravíme si data pro zprávu
+              if (results[key].polozky.length > 0) {
+                restaurace.text.push(emojis[i] + ' ' + results[key].nazev);
+                restaurace.fallback.push('(' + ++i + ') ' + results[key].nazev);
+              }
+
+            }
+          }
+
+          bot.reply(message, {
+              text        : 'Vyberte, kde všude si dneska vyberete. (reakcemi pod příspěvkem)',
+              attachments : [{
+                fallback  : restaurace.fallback.join(' | '),
+                color     : 'good',
+                text      : restaurace.text.join('\n'),
+                mrkdwn_in : ['text']
+              }]
+            }, function (error, json) {
+              if (!error) {
+                var j = 0;
+                do {
+                  bot.api.reactions.add(
+                    {
+                      timestamp : json.ts,
+                      channel   : json.channel,
+                      name      : emojis[j].replace(/:/gi, '')
+                    },
+                    function (err) {
+                      if (err) {
+                        bot.botkit.log('Failed to add emoji reaction ' + emojis[j], err);
+                      }
+                    }
+                  );
+                } while (++j < i);
+              }
+            }
+          );
+        }
+      })
+      .catch(function (err) {
+          console.log(err);
+          let messages = [
+            'jsem teď trochu zmatený',
+            'zamotaly se mi optický kabely',
+            'Šifty říkal, že vyhrála Záležitost',
+            'něco mi hapruje pod kapotou'
+          ];
+          bot.reply(
+            message,
+            'Chtěl jsem vám udělat hlasování, ale '
+            + messages[getRandomInt(0, messages.length)] + '.'
+          );
+        }
+      );
+  }
+);
+
