@@ -42,7 +42,7 @@ function getRandomInt(min, max) {
 // ========================================================================== //
 
 controller.hears(
-  ['^ob[eě]d\\?*'],
+  ['^ob[eě]d\\?)*'],
   ['ambient'],
   function (bot, message) {
     bot.api.reactions.add({
@@ -61,7 +61,7 @@ controller.hears(
 );
 controller.hears(
   ['[cč]au', '[čc]us', 'ahoj', 'zdar'],
-  ['direct_message', 'direct_mention', 'mention'],
+  ['direct_message', 'direct_mention', 'mention', 'ambient'],
   function (bot, message) {
     let odpovedi = [
       'Čau', 'Čus', 'Ahoj', 'Zdar', 'Čau. Jak se vede?',
@@ -129,6 +129,7 @@ controller.hears(
     // pošleme aktivitu
     bot.reply(message, { type : 'typing' });
     scraper.vratVsechnyNabidky().then(function (results) {
+
       if (Object.keys(results).length === 0) {
         bot.reply(message, 'Bohužel pro dnešek nemám žádné nabídky.');
       } else {
