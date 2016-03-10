@@ -15,7 +15,7 @@ var scraper = new Scraper(); // stačí nám jeden
 var Botkit = require('botkit/lib/Botkit.js');
 
 var controller = Botkit.slackbot({
-  debug : true
+  debug : process.env.SLACKBOT_DEBUG
 });
 
 controller.spawn({
