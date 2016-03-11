@@ -42,7 +42,7 @@ function getRandomInt(min, max) {
 // ========================================================================== //
 
 controller.hears(
-  ['^ob[eě]d\\?)*'],
+  ['^ob[eě]d(\\?)*'],
   ['ambient'],
   function (bot, message) {
     bot.api.reactions.add({
