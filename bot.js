@@ -17,7 +17,7 @@ const chance = new Chance();
 var Botkit = require('botkit/lib/Botkit.js');
 
 var controller = Botkit.slackbot({
-  debug : process.env.SLACKBOT_DEBUG
+  debug : process.env.SLACKBOT_DEBUG == 'TRUE'
 });
 
 controller.spawn({
