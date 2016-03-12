@@ -258,7 +258,7 @@ controller.hears(
 function exitHandler(options, err) {
 
   var messages = [
-    "Kdo zakopnul o ten kabe... ```obed-o-bot has left the room```"
+    'Kdo zakopnul o ten kabe... ```obed-o-bot has left the room```'
   ];
   // pro všechny kanály kde jsme aktuálně přítomní
   // bot.say(messages[0]);
