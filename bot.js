@@ -17,7 +17,7 @@ const chance = new Chance();
 var Botkit = require('botkit/lib/Botkit.js');
 
 var controller = Botkit.slackbot({
-  debug : process.env.SLACKBOT_DEBUG
+  debug : process.env.SLACKBOT_DEBUG == 'TRUE'
 });
 
 controller.spawn({
@@ -251,4 +251,36 @@ controller.hears(
       );
   }
 );
+
+
+/*eslint-disable no-process-exit */
+
+function exitHandler(options, err) {
+
+  var messages = [
+    "Kdo zakopnul o ten kabe... ```obed-o-bot has left the room```"
+  ];
+  // pro všechny kanály kde jsme aktuálně přítomní
+  // bot.say(messages[0]);
+
+  if (options.cleanup) console.log('clean');
+  if (err) console.log(err.stack);
+  // pokud ukončujeme bota pomocí Ctrl-C, oznámíme to na Slacku a odpojíme se.
+  if (options.exit) {
+    console.log(messages[0]);
+    controller.shutdown(); // odpojíme se dřív než proces spadne.
+    process.exit();
+  }
+}
+
+/*eslint-enable no-process-exit */
+
+////do something when app is closing
+//process.on('exit', exitHandler.bind(null, { cleanup : true }));
+
+//catches ctrl+c event
+process.on('SIGINT', exitHandler.bind(null, { exit : true }));
+
+////catches uncaught exceptions
+//process.on('uncaughtException', exitHandler.bind(null, { exit : true }));
 
