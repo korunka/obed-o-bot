@@ -1,7 +1,7 @@
 {
   "name": "obed-o-bot",
-  "version": "0.6.0",
-  "description": "Slack bot pripominajici obedy a zjistujici nabidku",
+  "version": "0.6.1",
+  "description": "Bot pro Slack, který zjištuje nabídku okolních restaurací a informuje o ní.",
   "author": "Ondra Hlaváč <ondrej.hlavac@korunka.eu> (http://ondra.hlavac.cz)",
   "repository": {
     "type": "git",
