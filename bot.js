@@ -263,8 +263,12 @@ function exitHandler(options, err) {
   // pro všechny kanály kde jsme aktuálně přítomní
   // bot.say(messages[0]);
 
-  if (options.cleanup) console.log('clean');
-  if (err) console.log(err.stack);
+  if (options.cleanup) {
+    console.log('clean');
+  }
+  if (err) {
+    console.log(err.stack);
+  }
   // pokud ukončujeme bota pomocí Ctrl-C, oznámíme to na Slacku a odpojíme se.
   if (options.exit) {
     console.log(messages[0]);
