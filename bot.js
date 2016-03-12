@@ -121,19 +121,16 @@ controller.hears(
     // pošleme aktivitu
     bot.reply(message, { type : 'typing' });
     scraper.vratVsechnyNabidky().then(function (results) {
-
-      if (Object.keys(results).length === 0) {
-        bot.reply(message, 'Bohužel pro dnešek nemám žádné nabídky.');
-      } else {
-        var nabidky = [];
-        for (var key in results) {
-          if (results.hasOwnProperty(key)) {
-            var polozky = [];
-            for (var i = 0; i < results[key].polozky.length; i++) {
-              polozky.push(
-                results[key].polozky[i].nazev + ' - *' + results[key].polozky[i].cena + '*'
-              );
-            }
+      var nabidky = [];
+      for (var key in results) {
+        if (results.hasOwnProperty(key)) {
+          var polozky = [];
+          for (var i = 0; i < results[key].polozky.length; i++) {
+            polozky.push(
+              results[key].polozky[i].nazev + ' - *' + results[key].polozky[i].cena + '*'
+            );
+          }
+          if (polozky.length > 0) {
             nabidky.push({
               fallback   : 'Denní menu pro ' + results[key].nazev + ': ' + results[key].web,
               title      : results[key].nazev,
@@ -143,10 +140,14 @@ controller.hears(
             });
           }
         }
+      }
+      if (nabidky.length > 0) {
         bot.reply(message, {
           text        : 'Takhle vypadá aktuální nabídka',
           attachments : nabidky
         });
+      } else {
+        bot.reply(message, 'Bohužel pro dnešek nemám žádné nabídky.');
       }
     }).catch((error) => console.log('Error:', error));
   }
