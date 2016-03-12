@@ -6,6 +6,10 @@ const encoding = require('encoding');
 const fs = require('fs');
 
 
+// testujeme ze souborů?
+const offline = false;
+
+
 
 var zdroje = {
   zalezitost : {
@@ -54,7 +58,7 @@ function Scraper() {
   };
 
 
-  this.maxAge = 5000; // 5 sec  #debug
+  this.maxAge = 300000; // 5 min  #debug
 //  this.maxAge = 3600000; // 60 min
 
 
@@ -95,23 +99,21 @@ Scraper.prototype.vratNabidku = function (idZdroje) {
  */
 Scraper.prototype.vratVsechnyNabidky = function () {
   var self = this;
-  var promiseQueue = Object.keys(zdroje).map(self.vratNabidku, self);
+  var ids = Object.keys(zdroje);
+  var promiseQueue = ids.map(self.vratNabidku, self);
 
   return new Promise(function (resolve) {
     var lastPromise = Promise.resolve();
-    var resolveWithCurentNabidka = () => resolve(self.nabidka);
-    var handleCatchedRejection = (error) => console.log(error); // TODO: Use logging middleware
-
-    for (let i = 0; i <= promiseQueue.length; i++) {
+    for (var i = 0; i <= promiseQueue.length; i++) {
+      let idx = i;
       if (i < promiseQueue.length) {
-        // take last promise and chain another one to it, which now becomes
-        // the "last promise" in the chain
-        lastPromise = lastPromise
-          .then(() => promiseQueue[i]) // TODO: mark responses with zero results
-          .catch(handleCatchedRejection);
+        // take last promise and chain another one to it.
+        // That now becomes tha last promise.
+        lastPromise = lastPromise.then(() => promiseQueue[idx]).catch(() => {
+        });
         // ".then().catch()" to make sure all promises in the chain are tried
       } else {
-        lastPromise.then(resolveWithCurentNabidka);
+        lastPromise.then(() => resolve(self.nabidka));
       }
     }
   });
@@ -125,35 +127,64 @@ Scraper.prototype.vratVsechnyNabidky = function () {
 /**
  * Metoda starající se o stahování dat z určitého zdroje.
  *
- * Pokud je nastavená ENV proměnná OFFLINE_NABIDKA, pak načítá nabídku z
- * testovacího souboru na disku, podle zdroje.
- *
  * @param idZdroje
- * @returns {Promise}
+ * @returns {Promise} OKOK
  */
 Scraper.prototype.stahniNabidku = function (idZdroje) {
   var self = this;
 
+  if (offline) {
+    return self.nactiNabidkuZeSouboru(idZdroje);
+  }
+
   return new Promise(function (resolve, reject) {
-    var zpracujZiskanouNabidku = function (err, body) {
-      if (err) {
-        reject('nepodařilo se stáhnout nabídku pro ' + zdroje[idZdroje].name, err);
-      } else {
-        self[zdroje[idZdroje].parser](body, idZdroje);
-        resolve(self.nabidka[idZdroje]);
+    request({
+        url      : zdroje[idZdroje].url,
+        encoding : null
+      },
+      function (error, response, body) {
+
+        let mojeId = idZdroje;
+        let mujZdroj = zdroje[idZdroje];
+
+        if (error) {
+          reject('nepodařilo se stáhnout nabídku pro ' + mujZdroj.name, error);
+        } else {
+          self[mujZdroj.parser](body, mojeId);
+          resolve(self.nabidka[mojeId]);
+        }
       }
-    };
-    if (process.env.OFFLINE_NABIDKA == 'TRUE') {
-      fs.readFile(
-        zdroje[idZdroje].file,
-        (err, body) => zpracujZiskanouNabidku(err, body)
-      );
-    } else {
-      request(
-        { url : zdroje[idZdroje].url, encoding : null },
-        (err, resp, body) => zpracujZiskanouNabidku(err, body)
-      );
-    }
+    );
+  });
+};
+
+
+
+/**
+ * Načítá nabídku z testovacího souboru na disku, podle zdroje.
+ *
+ * @param idZdroje
+ * @returns {Promise} OKOK
+ */
+Scraper.prototype.nactiNabidkuZeSouboru = function (idZdroje) {
+  var self = this;
+
+  return new Promise(function (resolve, reject) {
+
+    fs.readFile(
+      zdroje[idZdroje].file,
+      function (error, body) {
+        let mojeId = idZdroje;
+        let mujZdroj = zdroje[idZdroje];
+        if (error) {
+          reject('nepodařilo se načíst soubor s nabídkou pro ' + mujZdroj.name, error);
+        } else {
+          self[mujZdroj.parser](body, mojeId);
+          resolve(self.nabidka[mojeId]);
+        }
+      }
+    );
+
   });
 };
 
@@ -275,3 +306,4 @@ Scraper.prototype.parsePolo = function (buffer, mojeId) {
 
 module.exports = Scraper;
 
+// (co.*(hraj|maj|d[aá]va|je)).*(z[aá]le([zž]itost)*)
