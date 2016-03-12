@@ -17,7 +17,7 @@ const chance = new Chance();
 var Botkit = require('botkit/lib/Botkit.js');
 
 var controller = Botkit.slackbot({
-  debug : process.env.SLACKBOT_DEBUG == 'TRUE'
+  debug : process.env.SLACKBOT_DEBUG
 });
 
 controller.spawn({
@@ -121,19 +121,16 @@ controller.hears(
     // pošleme aktivitu
     bot.reply(message, { type : 'typing' });
     scraper.vratVsechnyNabidky().then(function (results) {
-
-      if (Object.keys(results).length === 0) {
-        bot.reply(message, 'Bohužel pro dnešek nemám žádné nabídky.');
-      } else {
-        var nabidky = [];
-        for (var key in results) {
-          if (results.hasOwnProperty(key)) {
-            var polozky = [];
-            for (var i = 0; i < results[key].polozky.length; i++) {
-              polozky.push(
-                results[key].polozky[i].nazev + ' - *' + results[key].polozky[i].cena + '*'
-              );
-            }
+      var nabidky = [];
+      for (var key in results) {
+        if (results.hasOwnProperty(key)) {
+          var polozky = [];
+          for (var i = 0; i < results[key].polozky.length; i++) {
+            polozky.push(
+              results[key].polozky[i].nazev + ' - *' + results[key].polozky[i].cena + '*'
+            );
+          }
+          if (polozky.length > 0) {
             nabidky.push({
               fallback   : 'Denní menu pro ' + results[key].nazev + ': ' + results[key].web,
               title      : results[key].nazev,
@@ -143,10 +140,14 @@ controller.hears(
             });
           }
         }
+      }
+      if (nabidky.length > 0) {
         bot.reply(message, {
           text        : 'Takhle vypadá aktuální nabídka',
           attachments : nabidky
         });
+      } else {
+        bot.reply(message, 'Bohužel pro dnešek nemám žádné nabídky.');
       }
     }).catch((error) => console.log('Error:', error));
   }
@@ -250,36 +251,4 @@ controller.hears(
       );
   }
 );
-
-
-/*eslint-disable no-process-exit */
-
-function exitHandler(options, err) {
-
-  var messages = [
-    "Kdo zakopnul o ten kabe... ```obed-o-bot has left the room```"
-  ];
-  // pro všechny kanály kde jsme aktuálně přítomní
-  // bot.say(messages[0]);
-
-  if (options.cleanup) console.log('clean');
-  if (err) console.log(err.stack);
-  // pokud ukončujeme bota pomocí Ctrl-C, oznámíme to na Slacku a odpojíme se.
-  if (options.exit) {
-    console.log(messages[0]);
-    controller.shutdown(); // odpojíme se dřív než proces spadne.
-    process.exit();
-  }
-}
-
-/*eslint-enable no-process-exit */
-
-////do something when app is closing
-//process.on('exit', exitHandler.bind(null, { cleanup : true }));
-
-//catches ctrl+c event
-process.on('SIGINT', exitHandler.bind(null, { exit : true }));
-
-////catches uncaught exceptions
-//process.on('uncaughtException', exitHandler.bind(null, { exit : true }));
 
