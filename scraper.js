@@ -143,7 +143,7 @@ Scraper.prototype.stahniNabidku = function (idZdroje) {
         resolve(self.nabidka[idZdroje]);
       }
     };
-    if (process.env.OFFLINE_NABIDKA == 'TRUE') {
+    if (process.env.OFFLINE_NABIDKA === 'TRUE') {
       fs.readFile(
         zdroje[idZdroje].file,
         (err, body) => zpracujZiskanouNabidku(err, body)

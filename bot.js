@@ -17,7 +17,7 @@ const chance = new Chance();
 var Botkit = require('botkit/lib/Botkit.js');
 
 var controller = Botkit.slackbot({
-  debug : process.env.SLACKBOT_DEBUG == 'TRUE'
+  debug : process.env.SLACKBOT_DEBUG === 'TRUE'
 });
 
 controller.spawn({
@@ -264,14 +264,14 @@ function exitHandler(options, err) {
   // bot.say(messages[0]);
 
   if (options.cleanup) {
-    console.log('clean');
+    //console.log('clean');
   }
   if (err) {
-    console.log(err.stack);
+    //console.log(err.stack);
   }
   // pokud ukončujeme bota pomocí Ctrl-C, oznámíme to na Slacku a odpojíme se.
   if (options.exit) {
-    console.log(messages[0]);
+    console.log(messages[0]); // TODO: Nahradit console.log nějakým logovacím middlewarem.
     controller.shutdown(); // odpojíme se dřív než proces spadne.
     process.exit();
   }
