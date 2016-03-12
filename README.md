@@ -54,6 +54,7 @@ Nová funkcionalita a změny, které by se do budoucna hodily:
    načtené z lokálního `.env` souboru.
  * [Encoding](https://github.com/andris9/encoding) protože některé restaurace
    mají potřebu posílat nabídku v kódování `cp1250` :-)
+ * [Chance](https://github.com/chancejs/chancejs) pro generování náhodných... čehokoliv
 
 
 
