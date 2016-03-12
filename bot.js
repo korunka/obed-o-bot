@@ -2,6 +2,7 @@
 
 require('dotenv').load();
 const Scraper = require('./scraper');
+const Chance = require('chance');
 
 if (!process.env.SLACK_API_TOKEN) {
   console.log('Error: Specify slack token in environment');
@@ -9,6 +10,7 @@ if (!process.env.SLACK_API_TOKEN) {
 }
 
 var scraper = new Scraper(); // stačí nám jeden
+const chance = new Chance();
 
 
 
@@ -21,19 +23,6 @@ var controller = Botkit.slackbot({
 controller.spawn({
   token : process.env.SLACK_API_TOKEN
 }).startRTM();
-
-
-
-/**
- * Generátor nádodných čísel od MIN do MAX (vyjma MAX)
- *
- * @param {Number} min
- * @param {Number} max
- * @returns {Number}
- */
-function getRandomInt(min, max) {
-  return Math.floor(Math.random() * (max - min)) + min;
-}
 
 
 
@@ -68,7 +57,10 @@ controller.hears(
       'Jé čau. Ani jsem tě neviděl přicházet.',
       'Buď zdráv, sou... ehm... kamaráde.'
     ];
-    bot.reply(message, odpovedi[getRandomInt(0, odpovedi.length)]);
+    bot.reply(message, odpovedi[chance.natural({
+      min : 0,
+      max : odpovedi.length - 1
+    })]);
   }
 );
 
@@ -249,7 +241,10 @@ controller.hears(
           bot.reply(
             message,
             'Chtěl jsem vám udělat hlasování, ale '
-            + messages[getRandomInt(0, messages.length)] + '.'
+            + messages[chance.natural({
+              min : 0,
+              max : messages.length - 1
+            })] + '.'
           );
         }
       );

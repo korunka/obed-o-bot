@@ -24,6 +24,7 @@
   "dependencies": {
     "@slack/client": "^2.0.6",
     "botkit": "0.0.8",
+    "chance": "^1.0.1",
     "cheerio": "^0.20.0",
     "dotenv": "^2.0.0",
     "encoding": "^0.1.12",
